@@ -1,99 +1,124 @@
 package model;
 
-import java.io.FileReader;
 import java.util.Vector;
 
-public class Construccion {
-	private Vector<Integer> tour;
+public class Construccion extends General{
 	private Vector<Integer> nodosDisponibles;
-	public double costo;
-	private double[][] matrizAdyacencia; 
 	private int nodoActual;
-	private int cantidadNodos;
 	private float alfa;
 	
-	public Construccion(double[][] matrizAdyacencia, float alfa, int nodoActual){
-		this.matrizAdyacencia= matrizAdyacencia;
-		this.cantidadNodos= matrizAdyacencia.length;
+	public Construccion(double[][] matrizAdyacencia, float alfa){
+		super(matrizAdyacencia);
 		this.alfa= alfa;
-		setNodoActual(nodoActual);
-		tour= new Vector<Integer>();
-		
-		inicializarNodosDisponibles();
-		resolver();
 	}
 	
+	/**
+	 * Establece el nodo actual. Resta 1 esto es para que trabaje con arreglos
+	 * @param nodoActual
+	 */
 	public void setNodoActual(int nodoActual){
 		this.nodoActual= nodoActual - 1;
 	}
 	
-	public void resolver(){
-		Vector<Integer> lcr= null; 
-		
-		nodosDisponibles.removeElementAt(nodoActual);
-		tour.add(nodoActual);
-		
-		lcr= calcularLCR();
-	}
-	
+	/**
+	 * Crear un vector con todos los nodos necesarios, ayuda para recorrer nodos
+	 */
 	private void inicializarNodosDisponibles(){
+		nodosDisponibles= null;
 		nodosDisponibles= new Vector<Integer>();
-		for(int i=0; i<cantidadNodos; i++){
+		for(int i=0; i<matrizAdyacencia.length; i++){
 			nodosDisponibles.add(i+1);
 		}
 	}
 	
-	/*private boolean isInTour(int nodo){
-		for(int i=0; i<tour.size(); i++){
-			if(tour.get(i).equals(nodo)){
-				return true;
-			}
-		}
-		return false; 
-	}*/
-	
-	private double obtenerBeta(){
-		double mayor;
-		int nodoCandidato= nodosDisponibles.get(0);
-		mayor= matrizAdyacencia[nodoActual][nodoCandidato];
+	/**
+	 * Cáclulo del costo mayor en aristas. A partir de nodo actual hacia nodo disponible.
+	 * @return Mayor costo.
+	 */
+	private double calcularBeta(){
+		int nodoDisponible= nodosDisponibles.get(0);
+		double mayor= matrizAdyacencia[nodoActual][nodoDisponible];
+		
 		for(int i=1; i<nodosDisponibles.size(); i++){
-			nodoCandidato= nodosDisponibles.get(i);
-			if(matrizAdyacencia[nodoActual][nodoCandidato] > mayor){
-				mayor= matrizAdyacencia[nodoActual][nodoCandidato];
+			nodoDisponible= nodosDisponibles.get(i);
+			if(matrizAdyacencia[nodoActual][nodoDisponible] > mayor){
+				mayor= matrizAdyacencia[nodoActual][nodoDisponible];
 			}
 		}
+		
 		return mayor;
 	}
 	
-	private double obtenerGama(){ //No me acuerdo si revisa  en la matriz n,n
-		double menor;
-		int nodoCandidato= nodosDisponibles.get(0);
-		menor= matrizAdyacencia[nodoActual][nodoCandidato];
+	/**
+	 * Cáclulo del costo menor en aristas. A partir de nodo actual hacia nodo disponible.
+	 * @return Menor costo.
+	 */
+	private double calcularGama(){
+		int nodoDisponible= nodosDisponibles.get(0);
+		double menor= matrizAdyacencia[nodoActual][nodoDisponible];
+		
 		for(int i=1; i<nodosDisponibles.size(); i++){
-			nodoCandidato= nodosDisponibles.get(i);
-			if(matrizAdyacencia[nodoActual][nodoCandidato] < menor){
-				menor= matrizAdyacencia[nodoActual][nodoCandidato];
+			nodoDisponible= nodosDisponibles.get(i);
+			if(matrizAdyacencia[nodoActual][nodoDisponible] < menor){
+				menor= matrizAdyacencia[nodoActual][nodoDisponible];
 			}
 		}
+		
 		return menor;
 	}
 	
-	private double ejecutarEcuacion(){
-		double beta= obtenerBeta();
-		double gama= obtenerGama();
-		return (beta - (alfa * (beta - gama))); //aplicada formula correctamente?
+	/**
+	 * Cálculo de la formula para LRC. <b>"(beta-(alfa*(beta-gama)))</b>" 
+	 * @return Valor para comprobar pesos aceptados en LRC.
+	 */
+	private double calcularFormula(){
+		double beta= calcularBeta();
+		double gama= calcularGama();
+		return (beta - (alfa * (beta - gama)));
 	}
 	
-	private Vector<Integer> calcularLCR(){
-		double resultadoEcuacion= ejecutarEcuacion();
-		int nodoCandidato= 0;
-		Vector<Integer> lcr= new Vector<Integer>();
-		for(int i=0; i<nodosDisponibles.size(); i++){ //No me acuerdo si revisa  en la matriz n,n
-			nodoCandidato= nodosDisponibles.get(i);
-			if(matrizAdyacencia[nodoActual][nodoCandidato] < resultadoEcuacion){
-				lcr.add(nodoCandidato);
+	/**
+	 * Generar lista restringida de candidatos. 
+	 * @return LRC
+	 */
+	private Vector<Integer> calcularLRC(){
+		Vector<Integer> lrc= new Vector<Integer>();
+		double resultadoEcuacion= calcularFormula();
+		int nodoDisponible= 0;
+		
+		for(int i=0; i<nodosDisponibles.size(); i++){
+			nodoDisponible= nodosDisponibles.get(i);
+			if(matrizAdyacencia[nodoActual][nodoDisponible] <= resultadoEcuacion){
+				lrc.add(nodoDisponible);
 			}
 		}
-		return lcr;
+		
+		return lrc;
+	}
+	
+	/**
+	 * Resolver el proceso de construcción para un nodo elegido
+	 */
+	public void resolver(int nodoInicial){
+		Vector<Integer> lrc= null;
+		Integer randomLRC;
+		
+		inicializarTourTsp();
+		setNodoActual(nodoInicial);
+		inicializarNodosDisponibles();
+		
+		tourTsp.addElement(nodosDisponibles.get(nodoActual));
+		nodosDisponibles.removeElementAt(nodoActual);
+		
+		do{
+			lrc= calcularLRC();
+			randomLRC= lrc.get(obtenerAleatorio(0, lrc.size()));
+			tourTsp.addElement(randomLRC);
+			nodosDisponibles.removeElement(randomLRC);
+			nodoActual= randomLRC;
+		}while(!nodosDisponibles.isEmpty());
+		
+		tourTsp.addElement(tourTsp.get(0));
+		calcularCosteTourTsp();
 	}
 }

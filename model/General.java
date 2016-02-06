@@ -3,20 +3,52 @@ package model;
 import java.util.Vector;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class General {
+public abstract class General {
+	protected double[][] matrizAdyacencia;
+	protected Vector<Integer> tourTsp;
+	protected double costo; 
+	
+	public General(double[][] matrizAdyacencia){
+		this.matrizAdyacencia= matrizAdyacencia;
+	}
+	
+	/**
+	 * @return Ruta calculada, Tour TSP.
+	 */
+	public Vector<Integer> getTourTsp(){
+		return tourTsp;
+	}
+	
+	/**
+	 * @return Costo para recorrer el tourTSP.
+	 */
+	public double getCosto(){
+		return costo;
+	}
+	
+	/**
+	 * Inicilizar Tour tsp. Limpia Vector
+	 */
+	protected void inicializarTourTsp(){
+		tourTsp= null;
+		tourTsp= new Vector<Integer>();
+	}
+	
 	/**
 	 * Cálculo del peso para la ruta establecida en el parámetro.
 	 * @param tourTsp Ruta para calcular el coste.
 	 * @return Costo para recorrer la ruta.
 	 */
-	protected double calcularCosteTourTsp(Vector<Integer> tourTsp){
+	protected double calcularCosteTourTsp(){
 		double costo= 0;
 		
-		
+		for(int i=0; i<tourTsp.size()-1; i++){
+			//costo+= Double.parseDouble(matrizAdyacencia[tourTsp.get(i)-1][tourTsp.get(i+1)-1]); 
+			//NO SE TERMINA REVISAR TODA LA LINEA
+		}
 		
 		return costo;
 	}
-	
 	
 	/**
 	 * Cálculo de número aleatorio delimitado por el valor de inicio y valor final
