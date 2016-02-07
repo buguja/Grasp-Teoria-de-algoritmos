@@ -12,9 +12,9 @@ public class MatrizAdyacencia {
 		calcularMatrizAdyacencia(obtenerParCoordenadas(splitContentFile));
 	}
 	
-	public double obtenerPeso(int nodoInicial, int nodoFinal){
+	/*public double obtenerPeso(int nodoInicial, int nodoFinal){
 		return matrizAdyacencia[nodoInicial][nodoFinal];
-	}
+	}*/
 	
 	/**
 	 * Inicializar matriz de adyacencia, cada elemento en un número negativo

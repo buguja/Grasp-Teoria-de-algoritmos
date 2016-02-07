@@ -37,12 +37,12 @@ public class Construccion extends General{
 	 */
 	private double calcularBeta(){
 		int nodoDisponible= nodosDisponibles.get(0);
-		double mayor= matrizAdyacencia[nodoActual][nodoDisponible];
+		double mayor= matrizAdyacencia[nodoActual][nodoDisponible-1];
 		
 		for(int i=1; i<nodosDisponibles.size(); i++){
 			nodoDisponible= nodosDisponibles.get(i);
-			if(matrizAdyacencia[nodoActual][nodoDisponible] > mayor){
-				mayor= matrizAdyacencia[nodoActual][nodoDisponible];
+			if(matrizAdyacencia[nodoActual][nodoDisponible-1] > mayor){
+				mayor= matrizAdyacencia[nodoActual][nodoDisponible-1];
 			}
 		}
 		
@@ -55,12 +55,12 @@ public class Construccion extends General{
 	 */
 	private double calcularGama(){
 		int nodoDisponible= nodosDisponibles.get(0);
-		double menor= matrizAdyacencia[nodoActual][nodoDisponible];
+		double menor= matrizAdyacencia[nodoActual][nodoDisponible-1];
 		
 		for(int i=1; i<nodosDisponibles.size(); i++){
 			nodoDisponible= nodosDisponibles.get(i);
-			if(matrizAdyacencia[nodoActual][nodoDisponible] < menor){
-				menor= matrizAdyacencia[nodoActual][nodoDisponible];
+			if(matrizAdyacencia[nodoActual][nodoDisponible-1] < menor){
+				menor= matrizAdyacencia[nodoActual][nodoDisponible-1];
 			}
 		}
 		
@@ -88,7 +88,7 @@ public class Construccion extends General{
 		
 		for(int i=0; i<nodosDisponibles.size(); i++){
 			nodoDisponible= nodosDisponibles.get(i);
-			if(matrizAdyacencia[nodoActual][nodoDisponible] <= resultadoEcuacion){
+			if(matrizAdyacencia[nodoActual][nodoDisponible-1] <= resultadoEcuacion){
 				lrc.add(nodoDisponible);
 			}
 		}
@@ -101,7 +101,7 @@ public class Construccion extends General{
 	 */
 	public void resolver(int nodoInicial){
 		Vector<Integer> lrc= null;
-		Integer randomLRC;
+		int nodoLRC;
 		
 		inicializarTourTsp();
 		setNodoActual(nodoInicial);
@@ -109,14 +109,14 @@ public class Construccion extends General{
 		
 		tourTsp.addElement(nodosDisponibles.get(nodoActual));
 		nodosDisponibles.removeElementAt(nodoActual);
-		
-		do{
+	
+		while(!nodosDisponibles.isEmpty()){
 			lrc= calcularLRC();
-			randomLRC= lrc.get(obtenerAleatorio(0, lrc.size()));
-			tourTsp.addElement(randomLRC);
-			nodosDisponibles.removeElement(randomLRC);
-			nodoActual= randomLRC;
-		}while(!nodosDisponibles.isEmpty());
+			nodoLRC= lrc.get(obtenerAleatorio(0, lrc.size()));
+			nodosDisponibles.removeElement(nodoLRC);
+			tourTsp.addElement(nodoLRC);
+			setNodoActual(nodoLRC);
+		}
 		
 		tourTsp.addElement(tourTsp.get(0));
 		calcularCosteTourTsp();

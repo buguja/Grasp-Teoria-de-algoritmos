@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import model.Construccion;
 import model.MatrizAdyacencia;
 import view.GUI;
 
@@ -80,7 +81,10 @@ public class Controller implements ActionListener{
 			/*for(double[] temp: matrizAdyacencia.matrizAdyacencia){
 				System.out.println(Arrays.toString(temp));
 			}*/
-			
+			Construccion construccion= new Construccion(matrizAdyacencia.matrizAdyacencia, 0.8f);
+			construccion.resolver(1);
+			System.out.println("Costo: " + construccion.getCosto());
+			System.out.println("Tour: " + construccion.getTourTsp().toString());
 		}
 	}
 }

@@ -40,11 +40,10 @@ public abstract class General {
 	 * @return Costo para recorrer la ruta.
 	 */
 	protected double calcularCosteTourTsp(){
-		double costo= 0;
-		
+		costo= 0;
+				
 		for(int i=0; i<tourTsp.size()-1; i++){
-			//costo+= Double.parseDouble(matrizAdyacencia[tourTsp.get(i)-1][tourTsp.get(i+1)-1]); 
-			//NO SE TERMINA REVISAR TODA LA LINEA
+			costo+= matrizAdyacencia[tourTsp.get(i)-1][tourTsp.get(i+1)-1]; 
 		}
 		
 		return costo;
@@ -57,6 +56,9 @@ public abstract class General {
 	 * @return Valor aleatorio.
 	 */
 	protected int obtenerAleatorio(int inicio, int ultimo){
-		return ThreadLocalRandom.current().nextInt(inicio, ultimo);
+		if(inicio != ultimo){
+			return ThreadLocalRandom.current().nextInt(inicio, ultimo);
+		}
+		return 0;
 	}
 }
