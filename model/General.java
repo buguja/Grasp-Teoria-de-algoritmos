@@ -55,7 +55,7 @@ public abstract class General {
 	 * @param ultimo Valor máximo que puede retornar.
 	 * @return Valor aleatorio.
 	 */
-	protected int obtenerAleatorio(int inicio, int ultimo){
+	public final static int obtenerAleatorio(int inicio, int ultimo){
 		if(inicio != ultimo){
 			return ThreadLocalRandom.current().nextInt(inicio, ultimo);
 		}

@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import model.Construccion;
+import model.DosSwap;
+import model.General;
 import model.MatrizAdyacencia;
 import view.GUI;
 
@@ -78,13 +80,17 @@ public class Controller implements ActionListener{
 				gui.mostrarMensajeDialog(e1.getMessage());
 			}
 		}else if(e.getSource().equals(gui.btnCalcular)){
-			/*for(double[] temp: matrizAdyacencia.matrizAdyacencia){
-				System.out.println(Arrays.toString(temp));
-			}*/
 			Construccion construccion= new Construccion(matrizAdyacencia.matrizAdyacencia, 0.8f);
-			construccion.resolver(1);
-			System.out.println("Costo: " + construccion.getCosto());
-			System.out.println("Tour: " + construccion.getTourTsp().toString());
+			DosSwap dosSwap= new DosSwap(matrizAdyacencia.matrizAdyacencia);
+			construccion.resolver(Integer.parseInt(gui.textFieldNodoInicial.getText()));
+			dosSwap.generarSVn(construccion.getTourTsp(), construccion.getCosto());
+			for(int i=0; i<1000; i++){
+				construccion.resolver(General.obtenerAleatorio(2, 40));
+				dosSwap.generarSVn(construccion.getTourTsp(), construccion.getCosto());
+			}
+			
+			gui.textFieldCosto.setText(String.valueOf(dosSwap.getCosto()));
+			gui.textAreaRecorrido.setText(dosSwap.getTourTsp().toString());
 		}
 	}
 }
